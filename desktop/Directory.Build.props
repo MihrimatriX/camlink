@@ -1,0 +1,7 @@
+<Project>
+  <!-- Yayın derlemesinde sembol dosyası üretilmez. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+</Project>

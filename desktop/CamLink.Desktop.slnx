@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CamLink.Desktop/CamLink.Desktop.csproj" />
+    <Project Path="src/CamLink.Desktop.Core/CamLink.Desktop.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CamLink.Desktop.Core.Tests/CamLink.Desktop.Core.Tests.csproj" />
+  </Folder>
+</Solution>

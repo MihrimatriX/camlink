@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CamLink: telefonun Windows web kamerası</title>
+<meta name="description" content="CamLink, Android telefonunu Windows'ta “CamLink Kamera” adlı bir web kamerasına çevirir. Windows uygulamasını ve APK'yı indir, QR'ı okut.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<style>
+/* Renkler uygulamanın lacivert paletinden (app/src/theme.ts). Açık tema aynı tonların açık karşılığı. */
+:root {
+  --bg: #F3F6FC;
+  --surface: #FFFFFF;
+  --surface-2: #E6ECF8;
+  --line: #C5D1EA;
+  --text: #0B1530;
+  --muted: #42557D;
+  --primary: #2563EB;
+  --on-primary: #FFFFFF;
+  --link: #1D4ED8;
+  --focus: #1D4ED8;
+  --hero-glow: rgba(37, 99, 235, 0.14);
+  --shadow: 0 18px 40px -18px rgba(11, 21, 48, 0.35);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0B1530;
+    --surface: #111F3A;
+    --surface-2: #1A2D52;
+    --line: #2B4374;
+    --text: #DCE7FF;
+    --muted: #93A6CE;
+    --primary: #2563EB;
+    --on-primary: #FFFFFF;
+    --link: #57D2FF;
+    --focus: #57D2FF;
+    --hero-glow: rgba(87, 210, 255, 0.10);
+    --shadow: 0 22px 44px -18px rgba(0, 4, 14, 0.8);
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 1.0625rem/1.6 system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--link); text-underline-offset: 0.18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+code, kbd { font: 0.9em ui-monospace, "Cascadia Mono", Consolas, monospace; background: var(--surface-2); padding: 0.1em 0.4em; border-radius: 6px; overflow-wrap: anywhere; }
+
+.wrap { max-width: 68rem; margin-inline: auto; padding-inline: 16px; }
+@media (min-width: 720px) { .wrap { padding-inline: 32px; } }
+
+/* Üst şerit */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 16px; }
+.brand { display: inline-flex; align-items: center; gap: 12px; color: var(--text); text-decoration: none; font-weight: 700; font-size: 1.25rem; letter-spacing: 0.01em; }
+.brand img { width: 40px; height: 40px; border-radius: 10px; }
+.top nav { display: flex; gap: 20px; font-size: 0.95rem; }
+.top nav a { color: var(--muted); text-decoration: none; padding-block: 8px; }
+.top nav a:hover { color: var(--text); text-decoration: underline; }
+
+/* Kahraman alan */
+.hero-bg { background: radial-gradient(60rem 28rem at 85% 0%, var(--hero-glow), transparent 70%); }
+.hero {
+  display: grid; gap: 40px; align-items: center;
+  padding-block: 32px 64px;
+}
+@media (min-width: 900px) { .hero { grid-template-columns: 1.05fr 1fr; padding-block: 56px 88px; } }
+h1 { font-size: clamp(2.1rem, 6.4vw, 3.4rem); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 20px; }
+.lead { font-size: 1.2rem; color: var(--muted); margin: 0 0 28px; max-width: 34rem; }
+.dl { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 18px; padding: 0; list-style: none; }
+.btn {
+  display: inline-flex; flex-direction: column; gap: 2px; min-height: 56px; justify-content: center;
+  padding: 10px 22px; border-radius: 14px; text-decoration: none; font-weight: 700; font-size: 1.05rem;
+  border: 1px solid transparent; transition: transform .12s ease, filter .12s ease;
+}
+.btn small { font-weight: 500; font-size: 0.8rem; opacity: 0.85; }
+.btn.primary { background: var(--primary); color: var(--on-primary); }
+.btn.secondary { background: var(--surface); color: var(--text); border-color: var(--line); }
+.btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+.btn:focus-visible { outline-offset: 4px; border-radius: 14px; }
+.fine { color: var(--muted); font-size: 0.95rem; margin: 0; }
+
+.shot { margin: 0; }
+.shot img { border-radius: 18px; border: 1px solid var(--line); box-shadow: var(--shadow); background: #0B1530; }
+.shot figcaption { color: var(--muted); font-size: 0.875rem; margin-top: 12px; }
+
+/* Bölümler */
+section { padding-block: 56px; border-top: 1px solid var(--line); }
+h2 { font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 24px; }
+.features { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); }
+.features li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+.features strong { display: block; margin-bottom: 4px; }
+.features span { color: var(--muted); font-size: 0.97rem; }
+
+.steps { list-style: none; counter-reset: s; margin: 0; padding: 0; display: grid; gap: 16px; }
+.steps > li { counter-increment: s; display: grid; grid-template-columns: 44px 1fr; gap: 16px; align-items: start; }
+.steps > li::before {
+  content: counter(s); display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px;
+  background: var(--primary); color: var(--on-primary); font-weight: 700; font-size: 1.2rem;
+}
+.steps h3 { margin: 6px 0 4px; font-size: 1.15rem; }
+.steps p { margin: 0; color: var(--muted); }
+.steps .shot { grid-column: 1 / -1; margin-top: 12px; max-width: 30rem; }
+@media (min-width: 720px) { .steps .shot { grid-column: 2; } }
+
+.req { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); margin: 0; padding: 0; list-style: none; }
+.req li { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+.req b { display: block; font-size: 1.15rem; }
+.req span { color: var(--muted); font-size: 0.95rem; }
+
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 12px; }
+summary { cursor: pointer; padding: 16px 18px; font-weight: 600; list-style-position: inside; border-radius: 14px; }
+summary::marker { color: var(--muted); }
+details[open] summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+details > div { padding: 0 18px 16px; color: var(--muted); }
+details > div > :first-child { margin-top: 0; }
+details > div > :last-child { margin-bottom: 0; }
+details ol, details ul { padding-left: 1.3em; }
+details li { margin-block: 4px; }
+
+footer { border-top: 1px solid var(--line); padding-block: 32px 48px; color: var(--muted); font-size: 0.95rem; }
+footer p { margin: 0 0 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <a class="brand" href="#"><img src="assets/icon.png" width="40" height="40" alt="">CamLink</a>
+  <nav aria-label="Sayfa bölümleri">
+    <a href="#kurulum">Kurulum</a>
+    <a href="#sss">SSS</a>
+    <a href="https://github.com/MihrimatriX/camlink">Kaynak kod</a>
+  </nav>
+</header>
+
+<main>
+  <div class="hero-bg"><div class="wrap hero">
+    <div>
+      <h1>Telefonunu Windows'ta web kamerası olarak kullan.</h1>
+      <p class="lead">CamLink, Android telefonunu Windows'ta “CamLink Kamera” adlı bir web kamerasına çevirir. Bilgisayara Windows uygulamasını, telefona CamLink.apk'yı kur. Sonra ekrandaki QR kodu telefonla okut.</p>
+      <ul class="dl">
+        <li><a class="btn primary" href="https://github.com/MihrimatriX/camlink/releases/latest/download/CamLink-win-Setup.exe">Windows için indir<small>CamLink-win-Setup.exe</small></a></li>
+        <li><a class="btn secondary" href="https://github.com/MihrimatriX/camlink/releases/latest/download/CamLink.apk">Android için indir<small>CamLink.apk</small></a></li>
+      </ul>
+      <p class="fine">Windows 11 ve Android 8 veya üstü gerekir.</p>
+    </div>
+    <figure class="shot">
+      <img src="assets/desktop-idle.png" width="864" height="640" alt="CamLink masaüstü uygulaması: “Telefonunda CamLink'i aç ve bu kodu oku” başlığı ve ortada büyük bir QR kodu">
+      <figcaption>Masaüstü uygulaması telefonu beklerken. Bu görüntüdeki kod örnektir.</figcaption>
+    </figure>
+  </div></div>
+
+  <section id="ozellikler">
+    <div class="wrap">
+      <h2>Neler yapar</h2>
+      <!-- Kanıt (2026-10-27, Huawei SNE-LX1 + Windows 11): usb, wifi, autoconnect, 30fps1080, modes-4k (Windows tarafı; telefon 1080p30'a kadar), teams-zoom (OBS + MF okuyucu) denendi. Ekran kapalıyken yayın henüz denenmedi, sayfada yok. -->
+      <ul class="features">
+        <li data-claim="usb"><strong>USB ile bağlanır</strong><span>Kablo takılıysa görüntü kablodan gelir. Bunun için telefonda USB hata ayıklama açık olmalı.</span></li>
+        <li data-claim="wifi"><strong>Wi‑Fi ile de bağlanır</strong><span>Kablo yoksa aynı Wi‑Fi ağı üzerinden bağlanır. Hangisinin kullanılacağını uygulama seçer.</span></li>
+        <li data-claim="autoconnect"><strong>QR'ı bir kez okut</strong><span>Sonraki açılışlarda telefon kendiliğinden bağlanır.</span></li>
+        <li data-claim="30fps1080"><strong>1080p, saniyede 30 kare</strong><span>Görüntü Full HD çözünürlükte gelir.</span></li>
+        <li data-claim="modes-4k"><strong>360p'den 4K'ya modlar</strong><span>Windows'ta 360p ile 4K arasında modlar var. Telefonun desteklediği en yüksek kalite kendiliğinden seçilir.</span></li>
+        <li data-claim="teams-zoom"><strong>Uygulamalarda kamera olarak görünür</strong><span>Zoom, Teams, OBS ve tarayıcılar gibi kamera seçebilen Windows uygulamalarında “CamLink Kamera” adıyla listelenir.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="kurulum">
+    <div class="wrap">
+      <h2>Üç adımda kurulum</h2>
+      <ol class="steps">
+        <li>
+          <div>
+            <h3>Windows uygulamasını kur</h3>
+            <p><a href="https://github.com/MihrimatriX/camlink/releases/latest/download/CamLink-win-Setup.exe">CamLink-win-Setup.exe</a> dosyasını indir ve çalıştır. Kamera sürücüsü kurulu değilse pencerede <strong>Kur</strong> düğmesi çıkar. Bu düğme bir kez yönetici izni ister.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>Telefona APK'yı yükle</h3>
+            <p><a href="https://github.com/MihrimatriX/camlink/releases/latest/download/CamLink.apk">CamLink.apk</a> dosyasını telefona indir ve aç. Android sorarsa “bilinmeyen kaynaklardan yükleme” iznini ver.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>QR'ı okut</h3>
+            <p>Telefonda CamLink'i aç ve bilgisayardaki büyük QR kodu okut. Sonraki açılışlarda telefon kendiliğinden bağlanır. “CamLink Kamera” yalnız Windows uygulaması açıkken görünür.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="gereksinimler">
+    <div class="wrap">
+      <h2>Gereksinimler</h2>
+      <ul class="req">
+        <li><b>Windows 11</b><span>CamLink Kamera Windows 11 ister (derleme 22000 veya üstü).</span></li>
+        <li><b>Android 8 veya üstü</b><span>Kamerası olan bir Android telefon ve CamLink.apk.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="sss">
+    <div class="wrap">
+      <h2>Sık sorulanlar</h2>
+
+      <details>
+        <summary>Windows “bilgisayarınızı korudu” diyor</summary>
+        <div>
+          <p>Kurulum dosyası dijital olarak imzalı olmadığı için Windows bu uyarıyı (SmartScreen) gösterir. Şunu yap:</p>
+          <ol>
+            <li>“Windows bilgisayarınızı korudu” penceresinde <b>Ek bilgi</b>'ye tıkla.</li>
+            <li><b>Yine de çalıştır</b>'a tıkla.</li>
+          </ol>
+        </div>
+      </details>
+
+      <details>
+        <summary>Telefon APK'yı yüklemiyor</summary>
+        <div>
+          <p>APK Play Store dışından geldiği için Android “bilinmeyen kaynaklardan yükleme” iznini ister. Bu izni, dosyayı açtığın tarayıcıya ya da dosya yöneticisine ver. Sonra yüklemeyi yeniden başlat.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Yönetici izni neden isteniyor?</summary>
+        <div>
+          <p>Kamera sürücüsünü penceredeki <strong>Kur</strong> düğmesi kurar. Bunun için yönetici izni gerekir. İzin yalnız bir kez sorulur.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>“CamLink Kamera” listede görünmüyor</summary>
+        <div>
+          <p>Kamera yalnız Windows uygulaması açıkken görünür. CamLink'i aç, sonra kullandığın uygulamada kamerayı yeniden seç.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Mikrofonum Windows'a gelsin istiyorum</summary>
+        <div>
+          <p>Telefonun mikrofonunu Windows'ta kullanmak için <a href="https://vb-audio.com/Cable/">VB-Cable</a> gerekir. VB-Cable CamLink'le birlikte gelmez, ayrıca kurman gerekir.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Güncellemeler nasıl geliyor?</summary>
+        <div>
+          <p>Uygulama kendini günceller. Yeni sürüm çıkınca elle bir şey indirmen gerekmez.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Nasıl kaldırırım?</summary>
+        <div>
+          <ul>
+            <li><b>Windows:</b> Ayarlar › Uygulamalar › Yüklü uygulamalar bölümünden CamLink'i kaldır.</li>
+            <li><b>Telefon:</b> CamLink'i her uygulama gibi kaldır.</li>
+          </ul>
+          <p>Kaldırınca kamera sürücüsü ve güvenlik duvarı kuralları geride kalabilir. Bunları da silmek istersen komut istemini yönetici olarak aç ve şu komutları çalıştır:</p>
+          <p><code>regsvr32 /u /s "C:\Program Files\CamLink\camlink-vcam.dll"</code><br>
+             <code>netsh advfirewall firewall delete rule name="CamLink (TCP)"</code><br>
+             <code>netsh advfirewall firewall delete rule name="CamLink (UDP)"</code></p>
+          <p>Ardından <code>C:\Program Files\CamLink</code> klasörünü sil.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><a href="https://github.com/MihrimatriX/camlink/releases/latest">Tüm sürümler</a></p>
+    <p>Kaynak kod: <a href="https://github.com/MihrimatriX/camlink">MihrimatriX/camlink</a>. Bu sayfa çerez ya da izleme aracı kullanmaz, dışarıdan kod yüklemez.</p>
+  </div>
+</footer>
+
+</body>
+</html>

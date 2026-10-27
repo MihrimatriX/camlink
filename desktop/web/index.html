@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>CamLink</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <main class="stage">
+    <h1 id="headline">Telefonunda CamLink'i aç ve bu kodu okut</h1>
+
+    <div class="hero">
+      <div class="monitor" id="monitor" hidden>
+        <canvas id="preview" aria-label="Telefon kamerasının önizlemesi" hidden></canvas>
+        <div class="monitor-idle" id="monitor-idle">Telefonda yayın başlayınca görüntü burada çıkar</div>
+      </div>
+      <div class="qr-bezel" id="qr-box">
+        <img class="qr" id="qr" alt="Eşleştirme QR kodu">
+        <p class="qr-error" id="qr-error" hidden>Bilgisayar Wi‑Fi'ye ya da kabloya bağlı değil. Telefonla aynı Wi‑Fi'ye bağlan.</p>
+      </div>
+    </div>
+
+    <p class="status"><span class="led warn blink" id="status-led"></span><span id="status-text" aria-live="polite">Telefon bekleniyor…</span></p>
+    <p class="camline" id="camline">Zoom, Teams veya OBS'te kamera olarak “CamLink Kamera”yı seç</p>
+    <p class="links">
+      <button class="link" id="fw-btn">Telefon bağlanamıyor mu? Güvenlik duvarı izni ver</button>
+      <button class="link" id="pair-btn" hidden>Başka telefon eşle</button>
+    </p>
+
+    <section class="alerts" id="alerts" role="alert" aria-labelledby="t-alerts" hidden>
+      <h2 id="t-alerts">Dikkat</h2>
+      <ul id="alert-list"></ul>
+    </section>
+
+    <details class="settings" id="settings" hidden>
+      <summary>Kamera ayarları</summary>
+      <fieldset class="ctl" id="ctl"></fieldset>
+      <p class="note" id="mic-note">
+        <span id="mic-text"></span>
+        <span class="meter" id="mic-meter" hidden><span id="mic-level"></span></span>
+        <a id="mic-link" href="https://vb-audio.com/Cable/" target="_blank" rel="noopener" hidden>VB-Cable'ı indir</a>
+      </p>
+      <button class="key key-small" id="stream-btn">Yayını durdur</button>
+    </details>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden><span class="led"></span><span id="toast-text"></span></div>
+  <script src="app.js"></script>
+</body>
+</html>

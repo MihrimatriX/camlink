@@ -1,0 +1,20 @@
+<Window x:Class="CamLink.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="CamLink" Width="880" Height="680" MinWidth="520" MinHeight="560"
+        Background="{StaticResource Navy}" WindowStartupLocation="CenterScreen"
+        Icon="pack://application:,,,/Assets/camlink.ico">
+    <Grid>
+        <wv2:WebView2 x:Name="Web" />
+        <StackPanel x:Name="Fallback" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="460">
+            <TextBlock Text="Arayüz açılamadı" FontFamily="{StaticResource KeyFont}" FontSize="28" FontWeight="Bold" Foreground="{StaticResource Text}" Margin="0,0,0,10" />
+            <TextBlock TextWrapping="Wrap" Foreground="{StaticResource Muted}" FontSize="15" Margin="0,0,0,18"
+                       Text="Bu pencere için Microsoft Edge WebView2 gerekiyor, ama bilgisayarda yok. CamLink yine de çalışıyor. Pencereyi tarayıcıda açabilir ya da WebView2'yi Microsoft'un sitesinden indirebilirsin." />
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Tarayıcıda aç" Padding="16,8" Margin="0,0,10,0" Click="OpenBrowser_Click" />
+                <Button Content="WebView2'yi indir" Padding="16,8" Click="GetRuntime_Click" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

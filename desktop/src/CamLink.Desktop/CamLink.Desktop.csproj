@@ -1,0 +1,73 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Kaynak: deckpad 48923a0 studiohub/src/StudioHub/StudioHub.csproj -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <RootNamespace>CamLink.Desktop</RootNamespace>
+    <AssemblyName>CamLink.Desktop</AssemblyName>
+    <ApplicationIcon>Assets\camlink.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
+    <Version>1.0.2</Version>
+    <Product>CamLink</Product>
+    <Description>Telefonu Windows kamerası yapan CamLink masaüstü uygulaması</Description>
+    <SatelliteResourceLanguages>tr;en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <!-- Tek dosya, .NET kurulumu gerektirmeyen yayın -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+  </PropertyGroup>
+
+  <!-- WPF ve Windows Forms birlikte: Forms yalnızca tepsi simgesi için, genel using'lere eklenmez. -->
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+    <Using Include="System.IO" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4258.31" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <!-- Sürüm, yayın betiğinin kullandığı vpk aracıyla aynı olmalı (dotnet tool list -g). -->
+    <PackageReference Include="Velopack" Version="1.2.161" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CamLink.Desktop.Core\CamLink.Desktop.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Giriş noktası Program.cs (Velopack önce çalışır): App.xaml Main üretmez, yalnız derlenir. -->
+  <ItemGroup>
+    <ApplicationDefinition Remove="App.xaml" />
+    <Page Include="App.xaml" SubType="Designer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\camlink.ico" />
+    <!-- Yazı tipleri tek kopya (web/fonts); WPF bekleme karesi ve yedek ekran için pack://application:,,,/Assets/ altında gömülür. -->
+    <Resource Include="..\..\web\fonts\Barlow_600SemiBold.ttf" Link="Assets\Barlow_600SemiBold.ttf" />
+    <Resource Include="..\..\web\fonts\BarlowSemiCondensed_700Bold.ttf" Link="Assets\BarlowSemiCondensed_700Bold.ttf" />
+  </ItemGroup>
+
+  <!-- Uygulamanın yanında duran dosyalar: arayüz, FFmpeg, adb, sanal kamera DLL'i (kurulumda Program Files'a kopyalanır) -->
+  <ItemGroup>
+    <Content Include="..\..\web\**\*" LinkBase="web" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    <Content Include="..\..\vendor\ffmpeg\**\*" Exclude="..\..\vendor\ffmpeg\*.part" LinkBase="ffmpeg" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    <Content Include="..\..\vendor\adb\**\*" LinkBase="adb" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    <!-- DLL desktop/vcam/build.ps1 ile derlenir; yoksa uygulama yine derlenir, arayüz "kurulum dosyası yok" der. -->
+    <Content Include="..\..\vcam\build\Release\camlink-vcam.dll" Link="vcam\camlink-vcam.dll" Condition="Exists('..\..\vcam\build\Release\camlink-vcam.dll')" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+  </ItemGroup>
+
+</Project>

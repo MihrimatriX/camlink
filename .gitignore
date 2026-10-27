@@ -1,0 +1,26 @@
+# CamLink uygulaması kendi .gitignore'unu kullanır (app/.gitignore).
+
+# OBS eklentisi derleme çıktıları (build.sh üretir; OBS 30 başlıkları build/obs-30'a iner)
+obs-plugin/build/
+obs-plugin/out/
+
+# Sanal kamera DLL'i ve prob derleme çıktısı (desktop/vcam/build.ps1 üretir)
+desktop/vcam/build/
+
+# Masaüstü (.NET) derleme çıktıları, indirilen exe'ler ve yayın klasörü
+desktop/**/bin/
+desktop/**/obj/
+desktop/vendor/ffmpeg/ffmpeg.exe
+desktop/vendor/ffmpeg/ffmpeg.exe.part
+desktop/vendor/adb/*.exe
+desktop/vendor/adb/*.dll
+desktop/out/
+
+# Teslim paketleri (scripts/release.ps1 dist/ altına üretir)
+dist/
+*.zip
+*.apk
+*.aab
+
+.DS_Store
+Thumbs.db

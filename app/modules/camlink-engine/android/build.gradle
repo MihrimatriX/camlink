@@ -1,0 +1,26 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'expo.modules.camlinkengine'
+version = '1.0.0'
+
+android {
+  namespace "expo.modules.camlinkengine"
+  defaultConfig {
+    versionCode 1
+    versionName "1.0.0"
+  }
+  lintOptions {
+    abortOnError false
+  }
+}
+
+dependencies {
+  // Kamera, OpenGL filtreleri, donanım H.264 kodlayıcı ve SRT istemcisi.
+  // JitPack deposu app.json içindeki expo-build-properties > extraMavenRepos ile ekleniyor.
+  implementation "com.github.pedroSG94.RootEncoder:library:2.8.0"
+  // Ön plan hizmeti Headless JS görevi açık tutar (HeadlessJsTaskService); sürümü uygulamanın React Native'i belirler.
+  implementation 'com.facebook.react:react-android'
+}

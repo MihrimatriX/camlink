@@ -1,0 +1,11 @@
+adb (Android Debug Bridge), Android SDK Platform-Tools 37.0.1 Windows derlemesi
+Dosyalar: adb.exe, AdbWinApi.dll, AdbWinUsbApi.dll (Google, Android Open Source Project)
+Lisans: Apache 2.0; ayrıntılar SDK'daki platform-tools\NOTICE.txt
+Kaynak kodu: https://android.googlesource.com/platform/packages/modules/adb/
+İndirme: https://developer.android.com/tools/releases/platform-tools
+
+CamLink masaüstü adb'yi yalnızca ayrı bir süreç olarak çalıştırır (USB ile bağlı telefon için
+"adb devices" ve "adb reverse tcp:4468 / tcp:9101"); adb değiştirilmeden dağıtılır.
+Sürüm, geliştirme makinesindeki SDK ile aynı olmalı: iki farklı adb birbirinin sunucusunu kapatır.
+Kopyalamak için: pwsh desktop\scripts\adb-kopyala.ps1 [-Sdk <android-sdk klasörü>]
+(exe ve dll'ler depoya girmez.)

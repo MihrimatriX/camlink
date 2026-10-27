@@ -1,0 +1,70 @@
+{
+  "expo": {
+    "name": "CamLink",
+    "slug": "camlink",
+    "version": "1.0.2",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#060D1C",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A1428"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "dev.camlink.app"
+    },
+    "android": {
+      "package": "dev.camlink.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#1A2D52",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "predictiveBackGestureEnabled": false,
+      "blockedPermissions": [
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "CamLink, telefonun kamerasını bilgisayara göndermek ve QR kodu okumak için kamerayı kullanır.",
+          "microphonePermission": "CamLink, sesi bilgisayara göndermek için mikrofonu kullanır.",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true,
+            "buildArchs": [
+              "arm64-v8a"
+            ],
+            "extraMavenRepos": [
+              "https://jitpack.io"
+            ],
+            "enableMinifyInReleaseBuilds": false
+          }
+        }
+      ],
+      "expo-font",
+      "./plugins/withReleaseSigning"
+    ]
+  }
+}

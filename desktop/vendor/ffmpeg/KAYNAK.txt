@@ -1,0 +1,8 @@
+FFmpeg 9.0.2 "essentials" Windows derlemesi (www.gyan.dev)
+Lisans: GPL v3 (LICENSE.txt)
+Kaynak kodu: https://github.com/FFmpeg/FFmpeg/commit/946fcce07b
+Derleme ayrıntıları: https://www.gyan.dev/ffmpeg/builds/
+
+CamLink masaüstü bu programı yalnızca ayrı bir süreç olarak çalıştırır (telefondan gelen SRT/RTMP görüntüsünü çözmek için);
+FFmpeg CamLink'e bağlanmaz ve değiştirilmeden dağıtılır.
+İndirmek için: pwsh desktop\scripts\ffmpeg-indir.ps1 (ffmpeg.exe depoya girmez, SHA-256 betikte).
